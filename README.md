@@ -47,5 +47,5 @@ Backup and Disaster Recovery:
 Message Queue:
     Asynchronous communication between services using message queues (e.g., RabbitMQ, Kafka).
 
-![E-commerce Architecture Diagram][]
+![E-commerce Architecture Diagram][DiagramEkomersial.drawio.png]
 
