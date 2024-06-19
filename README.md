@@ -1,4 +1,4 @@
-Architecture Components:
+#Architecture Components:
 Client-Side:
     Users access the platform via web browsers or mobile applications.
 Load Balancer:
@@ -47,5 +47,5 @@ Backup and Disaster Recovery:
 Message Queue:
     Asynchronous communication between services using message queues (e.g., RabbitMQ, Kafka).
 
-![E-commerce Architecture Diagram][\AWS\DiagramEkomersial.drawio.png]
+![E-commerce Architecture Diagram][DiagramEkomersial.drawio.png]
 
