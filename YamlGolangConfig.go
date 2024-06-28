@@ -15,14 +15,16 @@ func main() {
 	var yamlFiles []string
 	var path string = ""
 
+	fmt.Println("Enter the path of the directory: ")
 	_, err := fmt.Scanln(&path)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	CheckDirExistOrNot(path)
-	CheckDirectoryOfChild(path, yamlFiles)
-	SetYamlConfig(yamlFiles)
+	if CheckDirExistOrNot(path){
+		CheckDirectoryOfChild(path, yamlFiles)
+		SetYamlConfig(yamlFiles)
+	}
 }
 
 func CheckDirExistOrNot(path string) bool {
@@ -55,9 +57,10 @@ func SetYamlConfig(yamlFiles []string) error {
 
 	var input string
 	var yamlPath string
-
-	_, errI := fmt.Scanln(&input)
+	fmt.Println("Enter the yaml config key using (.) as delimiter: ")
 	_, errY := fmt.Scanln(&yamlPath)
+	fmt.Println("Enter the input value for the key: ")
+	_, errI := fmt.Scanln(&input)
 	if errI != nil || errY != nil {
 		log.Fatal(errI, errY)
 	}
