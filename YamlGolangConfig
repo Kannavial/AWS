@@ -1,0 +1,129 @@
+package main
+import (
+	"yaml"
+	"os"
+	"re"
+	"fmt"
+	"err"
+	"regexp"
+	"gopkg.in/yaml.v2"
+    "strings"
+	"io/ioutil"
+    "log"
+)
+
+func CheckDirExistOrNot(path String) bool {
+	if(os.path.exist(path)){
+	    fmt.PrintLn("Directory exists.")
+		return true
+	}else{
+		return false
+		exit()
+	}
+}
+func HasYamlExtentension(filename String) bool {
+	var yamlExtentionPattern String := r'\.yaml$'
+	return re.match(yamlExtentionPattern, filename, re.IGNORECASE) is not None
+}
+func CheckDirectoryOfChild(path String, yamlFiles []String) error {
+	files, err := os.ReadDir(path)
+	if err != nil {
+		return err
+	}
+	for _, file := range files{
+		var fileName String := file.Name()
+		if HasYamlExtentension(fileName) {
+			yamlFiles = append(yamlFiles, fileName)
+		}
+	}
+	return nil
+}
+func SetYamlConfig(yamlFiles string[]) error {
+	var configDelimited String = "."
+
+	var input String
+	var yamlPath String
+
+	_, err := fmt.Scanln(&input)
+	_, err := fmt.Scanln(&yamlPath)
+
+	ChangeConfig(yamlPath, input, yamlFiles)
+}
+func ChangeConfig(yamlPath, input String, yamlFiles []String){
+    for _, yamlFile := range yamlFiles {
+        file, err := os.OpenFile(yamlFile, os.O_RDWR, 0644)
+        if err != nil {
+            log.Printf("Error opening file %s: %v", yamlFile, err)
+            continue
+        }
+
+        var data map[string]interface{}
+        byteData, err := ioutil.ReadAll(file)
+        if err != nil {
+            log.Printf("Error reading file %s: %v", yamlFile, err)
+            file.Close()
+            continue
+        }
+
+        err = yaml.Unmarshal(byteData, &data)
+        if err != nil {
+            log.Printf("Error unmarshalling file %s: %v", yamlFile, err)
+            file.Close()
+            continue
+        }
+
+        currentLevel := data
+        for _, key := range configYamlPath[:len(configYamlPath)-1] {
+            if nextLevel, ok := currentLevel[key].(map[interface{}]interface{}); ok {
+                currentLevel = convertToStringMap(nextLevel)
+            } else {
+                log.Printf("Key %s not found in file %s", key, yamlFile)
+                break
+            }
+        }
+
+        currentLevel[configYamlPath[len(configYamlPath)-1]] = inputToChange
+
+        newYamlData, err := yaml.Marshal(data)
+        if err != nil {
+            log.Printf("Error marshalling data for file %s: %v", yamlFile, err)
+            file.Close()
+            continue
+        }
+
+        err = file.Truncate(0)
+        if err != nil {
+            log.Printf("Error truncating file %s: %v", yamlFile, err)
+            file.Close()
+            continue
+        }
+
+        _, err = file.Seek(0, 0)
+        if err != nil {
+            log.Printf("Error seeking to beginning of file %s: %v", yamlFile, err)
+            file.Close()
+            continue
+        }
+
+        _, err = file.Write(newYamlData)
+        if err != nil {
+            log.Printf("Error writing to file %s: %v", yamlFile, err)
+            file.Close()
+            continue
+        }
+
+        fmt.Printf("Updated file: %s\n", yamlFile)
+        file.Close()
+    }
+}
+
+func main(){
+	var yamlFiles := []String
+	var path String := ""
+
+	_, err := fmt.Scanln(&path)
+
+	CheckDirExistOrNot(path)
+	CheckDirectoryOfChild(path, yamlFiles)
+	SetYamlConfig(yamlFiles)
+}
