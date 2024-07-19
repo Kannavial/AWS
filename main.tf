@@ -42,6 +42,6 @@ resource "aws_instance" "ec2_instance" {
   subnet_id              = module.vpc.public_subnets[0]
 
   tags = {
-    Name = "MyEC2Instancea"
+    Name = "MyEC2Instance"
   }
 }
