@@ -1,0 +1,27 @@
+stages:
+  - plan
+  - apply
+
+variables:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+
+plan:
+  stage: plan
+  script:
+    - terraform init
+    - terraform plan -out=tfplan -no-color
+  artifacts:
+    paths:
+      - tfplan
+  only:
+    - merge_requests
+
+apply:
+  stage: apply
+  script:
+    - terraform init
+    - terraform apply -auto-approve tfplan
+  when: manual
+  only:
+    - master
