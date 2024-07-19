@@ -2,6 +2,8 @@ name: Terraform Apply
 
 on:
   push:
+      branches:
+      - main
 
 jobs:
   terraform:
