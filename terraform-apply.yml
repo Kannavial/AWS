@@ -1,27 +1,24 @@
-stages:
-  - plan
-  - apply
+name: Terraform Apply
 
-variables:
-  TF_IN_AUTOMATION: "true"
-  TF_INPUT: "false"
+on:
+  push:
+    branches:
+      - main
 
-plan:
-  stage: plan
-  script:
-    - terraform init
-    - terraform plan -out=tfplan -no-color
-  artifacts:
-    paths:
-      - tfplan
-  only:
-    - merge_requests
+jobs:
+  terraform:
+    name: 'Terraform Apply'
+    runs-on: ubuntu-latest
 
-apply:
-  stage: apply
-  script:
-    - terraform init
-    - terraform apply -auto-approve tfplan
-  when: manual
-  only:
-    - master
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
